@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>部門聚餐餐廳票選</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+      color: #1e293b;
+      background: linear-gradient(to bottom, #f8fafc, #ffffff);
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+    .hero {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+      margin-bottom: 40px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    h1 {
+      margin: 20px 0 12px;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.15;
+    }
+    .hero p.desc {
+      max-width: 760px;
+      color: #475569;
+      font-size: 18px;
+      line-height: 1.8;
+      margin: 0;
+    }
+    .vote-box {
+      margin-top: 28px;
+      background: #0f172a;
+      color: #fff;
+      border-radius: 24px;
+      padding: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    }
+    .vote-box .label {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 8px;
+    }
+    .vote-box h2 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+    .vote-box p {
+      margin: 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 18px;
+      padding: 14px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: #fff;
+      color: #0f172a;
+    }
+    .btn-secondary {
+      background: #fff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-dark {
+      background: #0f172a;
+      color: #fff;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px;
+    }
+    .card {
+      overflow: hidden;
+      background: #fff;
+      border-radius: 28px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+    }
+    .image-wrap {
+      position: relative;
+      height: 320px;
+      overflow: hidden;
+      background: #e2e8f0;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transform: scale(1.05);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.12), transparent);
+    }
+    .image-text {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      color: #fff;
+      z-index: 2;
+    }
+    .image-text .type {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .image-text h3 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+    .tagline {
+      padding: 24px;
+      font-weight: 700;
+      line-height: 1.7;
+      color: #1f2937;
+    }
+    .grad-amber { background: linear-gradient(to right, #fef3c7, #fed7aa); }
+    .grad-rose { background: linear-gradient(to right, #ffe4e6, #fecaca); }
+    .grad-yellow { background: linear-gradient(to right, #fef9c3, #fde68a); }
+    .grad-emerald { background: linear-gradient(to right, #d1fae5, #ccfbf1); }
+    .content {
+      padding: 24px;
+    }
+    .info {
+      display: grid;
+      gap: 12px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #334155;
+    }
+    .info strong { color: #0f172a; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .hero, .vote-box { padding: 24px; }
+      .image-wrap { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <div class="badge">部門聚餐餐廳介紹</div>
+      <h1>4 家候選餐廳介紹</h1>
+     
+
+      <div class="vote-box">
+        <div>
+          <div class="label">Vote Now</div>
+          <h2>點選投票按鈕</h2>
+          
+        </div>
+        <a class="btn btn-primary" href="https://forms.gle/5j2ucpeqRcBXmifYA" target="_blank" rel="noopener noreferrer">前往投票</a>
+      </div>
+    </section>
+
+    <section class="grid" id="restaurantGrid"></section>
+  </main>
+
+  <script>
+    const restaurants = [
+      {
+        id: 1,
+        name: "真珠－台灣佳味 竹北店",
+        type: "精緻台菜",
+        tagline: "精緻台菜代表之一",
+        location: "新竹縣竹北市自強南路36號2樓",
+        price: "$700 合菜每個人需加付 $90-100",
+        highlight: "台菜精緻化、環境舒適、聚餐感完整",
+        note: "真珠的高湯非常厲害，長時間以老雞慢燉，再搭配細緻的吊湯技術，每一道料理都展現出扎實功夫，是讓人吃過會想再訪的經典台菜代表。",
+        map: "https://www.google.com/maps/search/?api=1&query=%E7%9C%9F%E7%8F%A0+%E5%8F%B0%E7%81%A3%E4%BD%B3%E5%91%B3+%E7%AB%B9%E5%8C%97%E5%BA%97",
+        menu: "https://www.jinzhu.com.tw/zh-TW/menu/main_menu",
+        images: [
+          "https://www.jinzhu.com.tw/storage/website/store/jinzhu20230904145223_1.jpeg",
+          "https://www.jinzhu.com.tw/storage/website/menusingle/jinzhu20250721101112_IMG.jpeg",
+          "https://www.jinzhu.com.tw/storage/website/menusingle/jinzhu20260402170540_IMG.jpeg",
+          "https://www.jinzhu.com.tw/storage/website/menuset/jinzhu20251216213323_IMG.jpeg",
+          "https://www.jinzhu.com.tw/storage/website/menuset/jinzhu20260324210237_IMG.jpeg"
+        ],
+        gradient: "grad-amber"
+      },
+      {
+        id: 2,
+        name: "榅燻 Comfort Table Smoke BBQ",
+        type: "美式煙燻 BBQ",
+        tagline: "經典美式特色，氣氛更輕鬆的一家小店。",
+        location: "新竹縣竹北市仁德街11號",
+        price: "$500-$1500",
+        highlight: "煙燻肉類主打、風格鮮明、聚餐記憶點高",
+        note: "在竹北 Top 10 名單中，這家一定會被我提到。特別是它的燻圈表現非常出色。如果大家想跳脫一般聚餐餐廳的選擇，這家會是有個性、有記憶點的一間。",
+        map: "https://www.google.com/maps/search/?api=1&query=%E6%A6%85%E7%87%BB+Comfort+Table+Smoke+BBQ+%E7%AB%B9%E5%8C%97",
+        menu: "https://www.ubereats.com/tw/store/%E6%A6%85%E7%87%BB-comfort-table-smoke-bbq/gxOpQn9CW5S3zXQW4u8pkA",
+        images: [
+          "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80"
+        ],
+        gradient: "grad-rose"
+      },
+      {
+        id: 3,
+        name: "Piccola Enoteca 彼刻義式餐酒館",
+        type: "義式餐酒館",
+        tagline: "精緻道地義式料理，氣氛有質感。",
+        location: "新竹縣竹北市成功二街102號",
+        price: "$500-$1500",
+        highlight: "義大利麵、披薩、排餐，優雅餐酒館氛圍",
+        note: "這間絕對值得列入竹北 Top 10 的餐廳之一。主打手工義大利麵與精緻食材，搭配專業酒窖與歐式優雅氛圍，不論約會或聚餐都很適合。",
+        map: "https://www.google.com/maps/search/?api=1&query=Piccola+Enoteca+%E5%BD%BC%E5%88%BB%E7%BE%A9%E5%BC%8F%E9%A4%90%E9%85%92%E9%A4%A8+%E7%AB%B9%E5%8C%97",
+        menu: "https://www.piccolaenoteca.com/menu",
+        images: [
+          "https://lirp.cdn-website.com/5d5e4871/dms3rep/multi/opt/20181205-_DSC9351-2-1920w.jpg",
+          "https://lirp.cdn-website.com/5d5e4871/dms3rep/multi/opt/20181204-_DSC8636-2-1920w.jpg",
+          "https://lirp.cdn-website.com/5d5e4871/dms3rep/multi/opt/20181204-_DSC8802-2-1920w.jpg",
+          "https://lirp.cdn-website.com/5d5e4871/dms3rep/multi/opt/20181204-_DSC8691-2-1920w.jpg",
+          "https://lirp.cdn-website.com/5d5e4871/dms3rep/multi/opt/20181204-_DSC8829-2-1920w.jpg"
+        ],
+        gradient: "grad-yellow"
+      },
+      {
+        id: 4,
+        name: "托斯卡尼尼 竹北店",
+        type: "義式餐廳",
+        tagline: "大眾義式料理、好懂輕鬆，聚餐友善。",
+        location: "新竹縣竹北市文信路355號",
+        price: "$400-$800",
+        highlight: "餐點選擇多樣、份量充足，聚餐氛圍輕鬆又好拍",
+        note: "雖然 Isaac 還沒有實際用餐過，但每次經過都會被它華麗的歐式庭園與宮廷風裝潢吸引。餐點選擇多、份量充足，整體評價也不錯，是網美打卡與約會聚餐的人氣餐廳。",
+        map: "https://www.google.com/maps/search/?api=1&query=%E6%89%98%E6%96%AF%E5%8D%A1%E5%B0%BC%E5%B0%BC+%E7%AB%B9%E5%8C%97%E5%BA%97",
+        menu: "https://www.toscanini.com.tw/",
+        images: [
+          "https://www.toscanini.com.tw/userfiles/images/20260409043452439.jpg",
+          "https://www.toscanini.com.tw/userfiles/images/news/20260330064143426.jpg",
+          "https://www.toscanini.com.tw/userfiles/images/news/20260330013616203.jpg"
+        ],
+        gradient: "grad-emerald"
+      }
+    ];
+
+    const grid = document.getElementById('restaurantGrid');
+
+    function createCard(item) {
+      const article = document.createElement('article');
+      article.className = 'card';
+
+      article.innerHTML = `
+        <div class="image-wrap">
+          ${item.images.map((img, index) => `<img class="slide ${index === 0 ? 'active' : ''}" src="${img}" alt="${item.name} ${index + 1}">`).join('')}
+          <div class="overlay"></div>
+          <div class="image-text">
+            <div class="type">${item.type}</div>
+            <h3>${item.name}</h3>
+          </div>
+        </div>
+        <div class="tagline ${item.gradient}">${item.tagline}</div>
+        <div class="content">
+          <div class="info">
+            <div><strong>地址：</strong>${item.location}</div>
+            <div><strong>價位：</strong>${item.price}</div>
+            <div><strong>特色：</strong>${item.highlight}</div>
+            <div><strong>Isaac心得參考：</strong>${item.note}</div>
+          </div>
+          <div class="actions">
+            <a class="btn btn-secondary" href="${item.menu}" target="_blank" rel="noopener noreferrer">查看菜單</a>
+            <a class="btn btn-dark" href="${item.map}" target="_blank" rel="noopener noreferrer">查看地圖</a>
+          </div>
+        </div>
+      `;
+
+      const slides = article.querySelectorAll('.slide');
+      let current = 0;
+      if (slides.length > 1) {
+        setInterval(() => {
+          slides[current].classList.remove('active');
+          current = (current + 1) % slides.length;
+          slides[current].classList.add('active');
+        }, 2400);
+      }
+
+      return article;
+    }
+
+    restaurants.forEach(item => grid.appendChild(createCard(item)));
+  </script>
+</body>
+</html>
